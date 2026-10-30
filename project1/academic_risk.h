@@ -303,3 +303,85 @@ char *risk_band(int ari)
 		return "At risk";
 	return "Critical";
 }
+
+/* Class results: mean ARI and how many students are in each band. */
+void print_class_risk(struct Roster *r)
+{
+	struct Student *p;
+	int total = 0;
+	int safe = 0, watch = 0, at_risk = 0, critical = 0;
+	int ari;
+
+	for (p = r->list; p < r->list + r->count; p++) {
+		ari = risk_index(p->grade);
+		total = total + ari;
+		if (ari == 0)
+			safe = safe + 1;
+		else if (ari < 40)
+			watch = watch + 1;
+		else if (ari < 70)
+			at_risk = at_risk + 1;
+		else
+			critical = critical + 1;
+	}
+	printf("Class mean ARI: %.1f / 100\n", (float)total / r->count);
+	printf("Safe: %d  Watch: %d  At risk: %d  Critical: %d\n", safe, watch,
+	       at_risk, critical);
+}
+
+void custom_analysis(struct Roster *r)
+{
+	struct Student *p;
+	int ari;
+
+	if (is_empty(r))
+		return;
+	printf("ARI = (50 - grade) x 2, or 0 if the grade is 50 or more\n");
+	printf("Bands: 0 Safe, 1-39 Watch, 40-69 At risk, 70-100 Critical\n\n");
+	printf("%-6s %-20s %6s %4s  %s\n", "ID", "Name", "Grade", "ARI", "Band");
+	for (p = r->list; p < r->list + r->count; p++) {
+		ari = risk_index(p->grade);
+		printf("%-6d %-20s %6.2f %4d  %s\n", p->id, p->name, p->grade,
+		       ari, risk_band(ari));
+	}
+	printf("\n");
+	print_class_risk(r);
+	printf("A higher mean ARI means the class is further below the pass mark.\n");
+}
+
+void generate_summary_report(struct Roster *r)
+{
+	struct Student *p;
+	struct Student *top;
+	struct Student *lowest;
+	float total = 0;
+	int passing = 0;
+
+	printf("===== SUMMARY REPORT =====\n");
+	printf("Total records: %d\n", r->count);
+	if (is_empty(r))
+		return;
+
+	/* One pointer walk finds the total, the highest, the lowest and the passes. */
+	top = r->list;
+	lowest = r->list;
+	for (p = r->list; p < r->list + r->count; p++) {
+		total = total + p->grade;
+		if (p->grade > top->grade)
+			top = p;
+		if (p->grade < lowest->grade)
+			lowest = p;
+		if (p->grade >= PASS_MARK)
+			passing = passing + 1;
+	}
+
+	printf("Average grade: %.2f\n", total / r->count);
+	printf("Highest grade: %.2f (%s)\n", top->grade, top->name);
+	printf("Lowest grade: %.2f (%s)\n", lowest->grade, lowest->name);
+	printf("Passing (%d or more): %d\n", PASS_MARK, passing);
+	printf("Below the pass mark: %d\n", r->count - passing);
+	printf("--- Academic Risk Index ---\n");
+	print_class_risk(r);
+}
+
+#endif

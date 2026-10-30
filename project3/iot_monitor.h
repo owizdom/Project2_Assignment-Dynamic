@@ -383,3 +383,102 @@ void process_device(struct Device *device, void (*callback)(struct Device *))
 {
 	callback(device);
 }
+
+/* Sends every new reading to its type's callback, then to the drift detector. */
+void process_readings(struct Network *n)
+{
+	/* Type 1 uses monitors[0], type 2 uses monitors[1], type 3 uses monitors[2]. */
+	Callback monitors[3] = {temperature_monitor, pressure_monitor, battery_monitor};
+	char *monitor_names[3] = {"temperature_monitor", "pressure_monitor", "battery_monitor"};
+	struct Device *d;
+	char value[20];
+	int before;
+	int done = 0;
+	int i;
+
+	for (d = n->list; d < n->list + n->count; d++) {
+		if (d->status != STATUS_WAITING)
+			continue;
+		d->status = STATUS_NORMAL;
+		before = alert_count;
+		process_device(d, monitors[d->type - 1]);
+		process_device(d, drift_detector);
+
+		format_value(d, value);
+		printf("%-4d %-14s %-12s %-9s ", d->id, d->name, type_name(d->type), value);
+		if (d->status == STATUS_NORMAL) {
+			printf("Normal (%s)\n", monitor_names[d->type - 1]);
+			n->normal = n->normal + 1;
+		} else {
+			printf("ALERT");
+			for (i = before; i < alert_count; i++)
+				printf(" %s (%s)", alerts[i].reason, alerts[i].callback);
+			printf("\n");
+			n->abnormal = n->abnormal + 1;
+		}
+		d->previous = reading_value(d);
+		d->processed = d->processed + 1;
+		n->readings = n->readings + 1;
+		done = done + 1;
+	}
+	if (done == 0)
+		printf("No new readings. Choose 4 first.\n");
+}
+
+void display_alerts(struct Network *n)
+{
+	struct Alert *a;
+
+	if (alert_count == 0) {
+		printf("No alerts.\n");
+		return;
+	}
+	for (a = alerts; a < alerts + alert_count; a++) {
+		printf("%-4d %-14s ", a->device_id, a->name);
+		if (a->type == PRESSURE)	/* the value with its unit */
+			printf("%d kPa", (int)a->value);
+		else if (a->type == TEMPERATURE)
+			printf("%.1f C", a->value);
+		else
+			printf("%.2f V", a->value);
+		printf(", expected %s: %s (%s)\n", a->limit, a->reason, a->callback);
+	}
+	printf("Total alerts: %d\n", alert_count);
+}
+
+void monitoring_summary(struct Network *n)
+{
+	struct Alert *a;
+	int per_type[3] = {0, 0, 0};
+	int drift = 0;
+
+	for (a = alerts; a < alerts + alert_count; a++) {
+		per_type[a->type - 1] = per_type[a->type - 1] + 1;
+		if (strcmp(a->callback, "drift_detector") == 0)
+			drift = drift + 1;
+	}
+	printf("Monitoring Summary\n");
+	printf("Registered devices: %d\n", n->count);
+	printf("Readings processed: %d\n", n->readings);
+	printf("Normal readings: %d\n", n->normal);
+	printf("Abnormal readings: %d\n", n->abnormal);
+	printf("Alerts by type: Temperature %d  Pressure %d  Battery %d\n", per_type[0], per_type[1], per_type[2]);
+	printf("Sensor Drift Detector: %d sudden jumps", drift);
+	if (drift > 0) {
+		printf(", on devices");
+		for (a = alerts; a < alerts + alert_count; a++) {
+			if (strcmp(a->callback, "drift_detector") == 0)
+				printf(" %d", a->device_id);
+		}
+	}
+	printf("\n");
+}
+
+void free_alerts(void)
+{
+	free(alerts);
+	alerts = NULL;
+	alert_count = 0;
+}
+
+#endif

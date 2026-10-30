@@ -220,3 +220,66 @@ void register_device(struct Network *n)
 	n->count = n->count + 1;
 	printf("Registered %s. Devices: %d\n", d.name, n->count);
 }
+
+void remove_device(struct Network *n)
+{
+	struct Device *target;
+	struct Device *p;
+	struct Device *smaller;
+	int id;
+
+	if (is_empty(n))
+		return;
+	id = read_number("Id to remove: ");
+	target = find_device(n, id);
+	if (target == NULL) {
+		printf("No device with that id.\n");
+		return;
+	}
+
+	/* Move every device after the removed one down one place. */
+	for (p = target; p < n->list + n->count - 1; p++)
+		*p = *(p + 1);
+	n->count = n->count - 1;
+
+	/* Make the array one smaller, or free it when it is empty. */
+	if (n->count == 0) {
+		free(n->list);
+		n->list = NULL;
+	} else {
+		smaller = realloc(n->list, n->count * sizeof(struct Device));
+		if (smaller != NULL)
+			n->list = smaller;	/* if this fails, the old array still works */
+	}
+	printf("Removed device %d. Devices: %d\n", id, n->count);
+}
+
+/*
+ * Every device gets one new random reading, written to the union member of its type.
+ * rand() % (steps + 1) picks a whole number of steps above the minimum.
+ * Option 5 processes them.
+ */
+void generate_readings(struct Network *n)
+{
+	struct Device *p;
+	int made = 0;
+
+	if (is_empty(n))
+		return;
+	for (p = n->list; p < n->list + n->count; p++) {
+		if (p->status == STATUS_WAITING)
+			continue;	/* keep the reading that is not processed yet */
+		if (p->type == TEMPERATURE)	/* 10.0 to 50.0 in steps of 0.1 */
+			p->reading.temperature = TEMP_SIM_MIN + (rand() % 401) / 10.0f;
+		else if (p->type == PRESSURE)	/* 80 to 120 */
+			p->reading.pressure = PRESSURE_SIM_MIN + rand() % (PRESSURE_SIM_MAX - PRESSURE_SIM_MIN + 1);
+		else				/* 3.00 to 4.40 in steps of 0.01 */
+			p->reading.voltage = VOLTAGE_SIM_MIN + (rand() % 141) / 100.0f;
+		p->status = STATUS_WAITING;
+		made = made + 1;
+	}
+	if (made == 0)
+		printf("Every reading is still waiting. Choose 5 to process them first.\n");
+	else
+		printf("Generated %d new readings. Choose 5 to process them.\n", made);
+}

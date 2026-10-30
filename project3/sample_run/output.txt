@@ -1,0 +1,130 @@
+$ gcc *.c -o iot_monitor
+$ ./iot_monitor
+Student ID: 993
+Project: Dynamic IoT Event Monitoring and Callback Engine
+Custom Callback: Sensor Drift Detector
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 2
+ID   Name           Type         Reading   Status
+101  Server Room    Temperature  -         No reading
+102  Boiler Room    Temperature  -         No reading
+201  Water Pump     Pressure     -         No reading
+202  Air Tank       Pressure     -         No reading
+301  Gate Sensor    Battery      -         No reading
+302  Door Lock      Battery      -         No reading
+Total devices: 6
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 1
+Device id: 101
+Rejected: id 101 already exists.
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 1
+Device id: 401
+Name: Wind Turbine
+Type 1) Temperature  2) Pressure  3) Battery: 3
+Registered Wind Turbine. Devices: 7
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 4
+Generated 7 new readings. Choose 5 to process them.
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 5
+101  Server Room    Temperature  38.1 C    Normal (temperature_monitor)
+102  Boiler Room    Temperature  24.7 C    Normal (temperature_monitor)
+201  Water Pump     Pressure     105 kPa   Normal (pressure_monitor)
+202  Air Tank       Pressure     94 kPa    Normal (pressure_monitor)
+301  Gate Sensor    Battery      4.40 V    ALERT overcharged (battery_monitor)
+302  Door Lock      Battery      3.86 V    Normal (battery_monitor)
+401  Wind Turbine   Battery      3.96 V    Normal (battery_monitor)
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 4
+Generated 7 new readings. Choose 5 to process them.
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 5
+101  Server Room    Temperature  45.3 C    ALERT too hot (temperature_monitor)
+102  Boiler Room    Temperature  39.1 C    Normal (temperature_monitor)
+201  Water Pump     Pressure     119 kPa   ALERT too high (pressure_monitor)
+202  Air Tank       Pressure     102 kPa   Normal (pressure_monitor)
+301  Gate Sensor    Battery      3.06 V    ALERT too low (battery_monitor) sudden jump (drift_detector)
+302  Door Lock      Battery      3.25 V    ALERT too low (battery_monitor) sudden jump (drift_detector)
+401  Wind Turbine   Battery      4.20 V    Normal (battery_monitor)
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 6
+301  Gate Sensor    4.40 V, expected 3.30 to 4.20 V: overcharged (battery_monitor)
+101  Server Room    45.3 C, expected 15.0 to 45.0 C: too hot (temperature_monitor)
+201  Water Pump     119 kPa, expected 90 to 110 kPa: too high (pressure_monitor)
+301  Gate Sensor    3.06 V, expected 3.30 to 4.20 V: too low (battery_monitor)
+301  Gate Sensor    3.06 V, expected change up to 0.50 V: sudden jump (drift_detector)
+302  Door Lock      3.25 V, expected 3.30 to 4.20 V: too low (battery_monitor)
+302  Door Lock      3.25 V, expected change up to 0.50 V: sudden jump (drift_detector)
+Total alerts: 7
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 3
+Id to remove: 202
+Removed device 202. Devices: 6
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 3
+Id to remove: 999
+No device with that id.
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 4
+Generated 6 new readings. Choose 5 to process them.
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 5
+101  Server Room    Temperature  42.7 C    Normal (temperature_monitor)
+102  Boiler Room    Temperature  29.1 C    Normal (temperature_monitor)
+201  Water Pump     Pressure     117 kPa   ALERT too high (pressure_monitor)
+301  Gate Sensor    Battery      3.12 V    ALERT too low (battery_monitor)
+302  Door Lock      Battery      4.26 V    ALERT overcharged (battery_monitor) sudden jump (drift_detector)
+401  Wind Turbine   Battery      3.69 V    ALERT sudden jump (drift_detector)
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 2
+ID   Name           Type         Reading   Status
+101  Server Room    Temperature  42.7 C    Normal
+102  Boiler Room    Temperature  29.1 C    Normal
+201  Water Pump     Pressure     117 kPa   Alert
+301  Gate Sensor    Battery      3.12 V    Alert
+302  Door Lock      Battery      4.26 V    Alert
+401  Wind Turbine   Battery      3.69 V    Alert
+Total devices: 6
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 7
+Monitoring Summary
+Registered devices: 6
+Readings processed: 20
+Normal readings: 11
+Abnormal readings: 9
+Alerts by type: Temperature 1  Pressure 2  Battery 9
+Sensor Drift Detector: 4 sudden jumps, on devices 301 302 302 401
+
+1.Register  2.Display  3.Remove  4.Generate readings
+5.Process readings  6.Alerts  7.Summary  8.Exit
+Choice: 8
+Memory freed. Goodbye.

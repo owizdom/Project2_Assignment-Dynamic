@@ -209,3 +209,97 @@ int by_id(const void *a, const void *b)
 
 	return x->id - y->id;	/* smallest id first */
 }
+
+void sort_students(struct Roster *r)
+{
+	/* The user's choice picks which sort rule qsort uses. */
+	CompareFunction rules[3] = {by_grade, by_name, by_id};
+	int choice;
+
+	if (is_empty(r))
+		return;
+	choice = read_number("Sort by 1) grade  2) name  3) id: ");
+	if (choice < 1 || choice > 3) {
+		printf("Invalid choice.\n");
+		return;
+	}
+	qsort(r->list, r->count, sizeof(struct Student), rules[choice - 1]);
+	display_students(r);
+}
+
+/* Finds a student by id (if a number is typed) or by full name. */
+void search_student(struct Roster *r)
+{
+	char text[50];
+	struct Student *p;
+	int id;
+
+	if (is_empty(r))
+		return;
+	read_line("Id or full name: ", text, sizeof(text));
+	id = atoi(text);	/* 0 if the text is a name */
+
+	for (p = r->list; p < r->list + r->count; p++) {
+		if (p->id == id || strcmp(p->name, text) == 0) {
+			print_student(p);
+			return;
+		}
+	}
+	printf("No student matches \"%s\".\n", text);
+}
+
+/* Adds up every grade by moving a pointer through the array. */
+void calculate_average(struct Roster *r)
+{
+	struct Student *p;
+	float total = 0;
+
+	if (is_empty(r))
+		return;
+	for (p = r->list; p < r->list + r->count; p++)
+		total = total + p->grade;
+	printf("Average grade: %.2f\n", total / r->count);
+}
+
+void find_top_student(struct Roster *r)
+{
+	struct Student *p;
+	struct Student *best;
+
+	if (is_empty(r))
+		return;
+	best = r->list;
+	for (p = r->list; p < r->list + r->count; p++) {
+		if (p->grade > best->grade)
+			best = p;
+	}
+	printf("Top student:\n");
+	print_student(best);
+}
+
+/*
+ * Academic Risk Index (ARI): how far a grade is below the pass mark,
+ * from 0 to 100. ARI = (50 - grade) x 2, or 0 if the student passed.
+ */
+int risk_index(float grade)
+{
+	int ari;
+
+	if (grade >= PASS_MARK)
+		return 0;
+	ari = (PASS_MARK - grade) * 2;
+	if (ari == 0)
+		ari = 1;	/* a fail just under 50 still counts as some risk */
+	return ari;
+}
+
+char *risk_band(int ari)
+{
+	if (ari == 0)
+		return "Safe";
+	if (ari < 40)
+		return "Watch";
+	if (ari < 70)
+		return "At risk";
+	return "Critical";
+}

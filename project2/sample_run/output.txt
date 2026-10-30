@@ -1,0 +1,211 @@
+$ gcc *.c -o text_analyzer
+$ ./text_analyzer
+Student ID: 993
+Project: Dynamic Text Mining and Linguistic Pattern Analyzer
+Source: On the Origin of Species, Charles Darwin (John Murray, 1859), closing paragraph
+Custom Analysis: Lexical Diversity Score
+Paragraph loaded. Words: 219  Distinct: 135
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 6
+Sort by 1) word  2) frequency: 2
+and            12    of             11    the            11    a               6
+from            6    to              6    with            6    forms           4
+so              4    been            3    in              3    is              3
+life            3    most            3    on              3    are             2
+as              2    being           2    by              2    each            2
+have            2    into            2    laws            2    many            2
+other           2    reproduction    2    that            2    these           2
+this            2    which           2    about           1    according       1
+acting          1    action          1    all             1    almost          1
+an              1    animals         1    around          1    bank            1
+beautiful       1    beginning       1    birds           1    breathed        1
+bushes          1    capable         1    character       1    clothed         1
+complex         1    conceiving      1    conditions      1    consequence     1
+constructed     1    contemplate     1    crawling        1    cycling         1
+damp            1    death           1    dependent       1    different       1
+direct          1    directly        1    disuse          1    divergence      1
+earth           1    elaborately     1    endless         1    entailing       1
+entangled       1    evolved         1    exalted         1    external        1
+extinction      1    famine          1    few             1    fixed           1
+flitting        1    follows         1    for             1    gone            1
+grandeur        1    gravity         1    growth          1    has             1
+having          1    high            1    higher          1    implied         1
+increase        1    indirect        1    inheritance     1    insects         1
+interesting     1    it              1    its             1    kinds           1
+largest         1    law             1    lead            1    less-improved   1
+manner          1    namely          1    natural         1    nature          1
+object          1    one             1    or              1    originally      1
+planet          1    plants          1    powers          1    produced        1
+production      1    ratio           1    reflect         1    selection       1
+sense           1    several         1    simple          1    singing         1
+struggle        1    taken           1    there           1    through         1
+thus            1    us              1    use             1    variability     1
+various         1    view            1    war             1    we              1
+whilst          1    wonderful       1    worms           1
+Distinct words: 135
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 6
+Sort by 1) word  2) frequency: 1
+a               6    about           1    according       1    acting          1
+action          1    all             1    almost          1    an              1
+and            12    animals         1    are             2    around          1
+as              2    bank            1    beautiful       1    been            3
+beginning       1    being           2    birds           1    breathed        1
+bushes          1    by              2    capable         1    character       1
+clothed         1    complex         1    conceiving      1    conditions      1
+consequence     1    constructed     1    contemplate     1    crawling        1
+cycling         1    damp            1    death           1    dependent       1
+different       1    direct          1    directly        1    disuse          1
+divergence      1    each            2    earth           1    elaborately     1
+endless         1    entailing       1    entangled       1    evolved         1
+exalted         1    external        1    extinction      1    famine          1
+few             1    fixed           1    flitting        1    follows         1
+for             1    forms           4    from            6    gone            1
+grandeur        1    gravity         1    growth          1    has             1
+have            2    having          1    high            1    higher          1
+implied         1    in              3    increase        1    indirect        1
+inheritance     1    insects         1    interesting     1    into            2
+is              3    it              1    its             1    kinds           1
+largest         1    law             1    laws            2    lead            1
+less-improved   1    life            3    manner          1    many            2
+most            3    namely          1    natural         1    nature          1
+object          1    of             11    on              3    one             1
+or              1    originally      1    other           2    planet          1
+plants          1    powers          1    produced        1    production      1
+ratio           1    reflect         1    reproduction    2    selection       1
+sense           1    several         1    simple          1    singing         1
+so              4    struggle        1    taken           1    that            2
+the            11    there           1    these           2    this            2
+through         1    thus            1    to              6    us              1
+use             1    variability     1    various         1    view            1
+war             1    we              1    which           2    whilst          1
+with            6    wonderful       1    worms           1
+Distinct words: 135
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 2
+Total words: 219
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 3
+Longest word: less-improved (13 characters)
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 4
+Most frequent word: and (count 12)
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 7
+Word to search: Life,
+Frequency of "life": 3
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 7
+Word to search: EVOLVED
+Frequency of "evolved": 1
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 7
+Word to search: dog
+"dog" does not appear in the text.
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 8
+Lexical Diversity Score (LDS)
+LDS = distinct words / total words x 100
+    = 135 / 219 x 100 = 61.6
+Band: Medium  (Low below 40, Medium 40 to 69.9, High 70 and above)
+Words used only once: 105 of 135
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 9
+Memory Inspection
+--------------------------
+Text buffer address: 0x1011230b0
+  the paragraph itself, from malloc
+Word statistics array: 0x1011268b0
+  the first entry of the word table, from realloc
+Selected word-stat entry: 0x101127fb8
+  the last entry of the word table, for "worms"
+Each entry takes 44 bytes.
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 10
+Text Summary
+Total words: 219
+Distinct words: 135
+Average word length: 4.87 characters
+Longest word: less-improved (13 characters)
+Most frequent word: and (count 12)
+Lexical Diversity Score: 61.6 (Medium)
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 1
+Paste a paragraph, then press Enter on an empty line:
+The cat's toy -- the CAT'S toy!!   The well-known toy,
+so  well-known... 'quoted' end-
+pneumonoultramicroscopicsilicovolcanoconiosis is 45 letters long.
+
+Read 153 characters. Buffer: 64 bytes at the start, doubled 2 times to 256 bytes.
+Text loaded. Words: 18  Distinct: 12
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 5
+the             3    cat's           2    toy             3    well-known      2
+so              1    quoted          1    end             1    pneumonoultramicroscopicsilicovolcanoco  1
+is              1    45              1    letters         1    long            1
+Distinct words: 12
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 10
+Text Summary
+Total words: 18
+Distinct words: 12
+Average word length: 6.28 characters
+Longest word: pneumonoultramicroscopicsilicovolcanoco (39 characters)
+Most frequent word: the (count 3)
+Lexical Diversity Score: 66.7 (Medium)
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 1
+Paste a paragraph, then press Enter on an empty line:
+
+No words were entered. The old text is kept.
+
+1.Paste text  2.Count words  3.Longest word  4.Most frequent
+5.Word table  6.Sort  7.Search  8.Lexical diversity
+9.Memory addresses  10.Summary  11.Exit
+Choice: 11
+Memory freed. Goodbye.

@@ -198,3 +198,98 @@ int build_word_stats(struct Text *t)
 	}
 	return 1;
 }
+
+/* Returns 1 (and says so) when the text has no words. */
+int is_empty(struct Text *t)
+{
+	if (t->total == 0) {
+		printf("No words to analyze.\n");
+		return 1;
+	}
+	return 0;
+}
+
+void enter_paragraph(struct Text *t)
+{
+	char word[MAX_WORD];
+	char *buffer;
+
+	printf("Paste a paragraph, then press Enter on an empty line:\n");
+	buffer = read_paragraph();
+	if (buffer == NULL || next_word(buffer, word) == NULL) {
+		printf("No words were entered. The old text is kept.\n");
+		free(buffer);
+		return;
+	}
+	free(t->buffer);	/* the old paragraph is replaced */
+	t->buffer = buffer;
+	if (build_word_stats(t) == 0) {
+		printf("Out of memory: the word table is empty.\n");
+		return;
+	}
+	printf("Text loaded. Words: %d  Distinct: %d\n", t->total, t->distinct);
+}
+
+void count_words(struct Text *t)
+{
+	printf("Total words: %d\n", t->total);
+}
+
+/* The longest word. On a tie, the one first in the alphabet. */
+void longest_word(struct Text *t)
+{
+	struct WordStat *p;
+	struct WordStat *best;
+
+	if (is_empty(t))
+		return;
+	best = t->words;
+	for (p = t->words; p < t->words + t->distinct; p++) {
+		if (strlen(p->name) > strlen(best->name))
+			best = p;
+		else if (strlen(p->name) == strlen(best->name) && strcmp(p->name, best->name) < 0)
+			best = p;
+	}
+	printf("Longest word: %s (%d characters)\n", best->name, (int)strlen(best->name));
+}
+
+/* The most frequent word. On a tie, the one first in the alphabet. */
+void most_frequent(struct Text *t)
+{
+	struct WordStat *p;
+	struct WordStat *best;
+
+	if (is_empty(t))
+		return;
+	best = t->words;
+	for (p = t->words; p < t->words + t->distinct; p++) {
+		if (p->count > best->count)
+			best = p;
+		else if (p->count == best->count && strcmp(p->name, best->name) < 0)
+			best = p;
+	}
+	printf("Most frequent word: %s (count %d)\n", best->name, best->count);
+}
+
+/* Prints every distinct word and its count, 4 to a row. */
+void display_word_statistics(struct Text *t)
+{
+	struct WordStat *p;
+	int column = 0;
+
+	if (is_empty(t))
+		return;
+	for (p = t->words; p < t->words + t->distinct; p++) {
+		if (column > 0)
+			printf("    ");
+		printf("%-14s%3d", p->name, p->count);
+		column = column + 1;
+		if (column == 4) {
+			printf("\n");
+			column = 0;
+		}
+	}
+	if (column != 0)
+		printf("\n");
+	printf("Distinct words: %d\n", t->distinct);
+}

@@ -1,0 +1,182 @@
+$ gcc *.c -o academic_risk_engine
+$ ./academic_risk_engine
+Student ID: 993
+Project: Dynamic Academic Performance and Risk Analysis Engine
+Custom Analysis: Academic Risk Index
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 1
+Student id: 1001
+Rejected: id 1001 already exists.
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 1
+Student id: 1013
+Name: Ngozi Eze
+Course: Physics
+Grade (0-100): 150
+Rejected: the grade must be from 0 to 100.
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 1
+Student id: 1013
+Name: Ngozi Eze
+Course: Physics
+Grade (0-100): 64.5
+Added Ngozi Eze. Records: 13
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 7
+Id to remove: 1006
+Removed id 1006. Records: 12
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 7
+Id to remove: 9999
+No student with that id.
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 2
+ID     Name                 Course              Grade
+1001   Amara Nwosu          Data Structures     78.50
+1002   Kwame Mensah         Calculus            42.00
+1003   Aisha Bello          Data Structures     91.00
+1004   Jean Habimana        Linear Algebra      55.50
+1005   Fatou Diallo         Calculus            67.00
+1007   Grace Uwase          Programming in C    84.00
+1008   Samuel Osei          Linear Algebra      38.50
+1009   Zainab Yusuf         Data Structures     73.00
+1010   Eric Mugisha         Calculus            49.50
+1011   Halima Abdi          Programming in C    60.00
+1012   David Kariuki        Linear Algebra      27.00
+1013   Ngozi Eze            Physics             64.50
+Total records: 12
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 3
+Sort by 1) grade  2) name  3) id: 1
+ID     Name                 Course              Grade
+1003   Aisha Bello          Data Structures     91.00
+1007   Grace Uwase          Programming in C    84.00
+1001   Amara Nwosu          Data Structures     78.50
+1009   Zainab Yusuf         Data Structures     73.00
+1005   Fatou Diallo         Calculus            67.00
+1013   Ngozi Eze            Physics             64.50
+1011   Halima Abdi          Programming in C    60.00
+1004   Jean Habimana        Linear Algebra      55.50
+1010   Eric Mugisha         Calculus            49.50
+1002   Kwame Mensah         Calculus            42.00
+1008   Samuel Osei          Linear Algebra      38.50
+1012   David Kariuki        Linear Algebra      27.00
+Total records: 12
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 3
+Sort by 1) grade  2) name  3) id: 2
+ID     Name                 Course              Grade
+1003   Aisha Bello          Data Structures     91.00
+1001   Amara Nwosu          Data Structures     78.50
+1012   David Kariuki        Linear Algebra      27.00
+1010   Eric Mugisha         Calculus            49.50
+1005   Fatou Diallo         Calculus            67.00
+1007   Grace Uwase          Programming in C    84.00
+1011   Halima Abdi          Programming in C    60.00
+1004   Jean Habimana        Linear Algebra      55.50
+1002   Kwame Mensah         Calculus            42.00
+1013   Ngozi Eze            Physics             64.50
+1008   Samuel Osei          Linear Algebra      38.50
+1009   Zainab Yusuf         Data Structures     73.00
+Total records: 12
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 3
+Sort by 1) grade  2) name  3) id: 3
+ID     Name                 Course              Grade
+1001   Amara Nwosu          Data Structures     78.50
+1002   Kwame Mensah         Calculus            42.00
+1003   Aisha Bello          Data Structures     91.00
+1004   Jean Habimana        Linear Algebra      55.50
+1005   Fatou Diallo         Calculus            67.00
+1007   Grace Uwase          Programming in C    84.00
+1008   Samuel Osei          Linear Algebra      38.50
+1009   Zainab Yusuf         Data Structures     73.00
+1010   Eric Mugisha         Calculus            49.50
+1011   Halima Abdi          Programming in C    60.00
+1012   David Kariuki        Linear Algebra      27.00
+1013   Ngozi Eze            Physics             64.50
+Total records: 12
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 4
+Average grade: 60.88
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 5
+Top student:
+1003   Aisha Bello          Data Structures     91.00
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 6
+Id or full name: 1003
+1003   Aisha Bello          Data Structures     91.00
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 6
+Id or full name: Grace Uwase
+1007   Grace Uwase          Programming in C    84.00
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 8
+ARI = (50 - grade) x 2, or 0 if the grade is 50 or more
+Bands: 0 Safe, 1-39 Watch, 40-69 At risk, 70-100 Critical
+
+ID     Name                  Grade  ARI  Band
+1001   Amara Nwosu           78.50    0  Safe
+1002   Kwame Mensah          42.00   16  Watch
+1003   Aisha Bello           91.00    0  Safe
+1004   Jean Habimana         55.50    0  Safe
+1005   Fatou Diallo          67.00    0  Safe
+1007   Grace Uwase           84.00    0  Safe
+1008   Samuel Osei           38.50   23  Watch
+1009   Zainab Yusuf          73.00    0  Safe
+1010   Eric Mugisha          49.50    1  Watch
+1011   Halima Abdi           60.00    0  Safe
+1012   David Kariuki         27.00   46  At risk
+1013   Ngozi Eze             64.50    0  Safe
+
+Class mean ARI: 7.2 / 100
+Safe: 8  Watch: 3  At risk: 1  Critical: 0
+A higher mean ARI means the class is further below the pass mark.
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 9
+===== SUMMARY REPORT =====
+Total records: 12
+Average grade: 60.88
+Highest grade: 91.00 (Aisha Bello)
+Lowest grade: 27.00 (David Kariuki)
+Passing (50 or more): 8
+Below the pass mark: 4
+--- Academic Risk Index ---
+Class mean ARI: 7.2 / 100
+Safe: 8  Watch: 3  At risk: 1  Critical: 0
+
+1.Add  2.Display  3.Sort  4.Average  5.Top student
+6.Search  7.Remove  8.Risk index  9.Summary  10.Exit
+Choice: 10
+Memory freed. Goodbye.

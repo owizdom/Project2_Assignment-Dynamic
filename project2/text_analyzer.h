@@ -293,3 +293,80 @@ void display_word_statistics(struct Text *t)
 		printf("\n");
 	printf("Distinct words: %d\n", t->distinct);
 }
+
+/* Sort rules for qsort. Each one returns a negative number when a goes first. */
+int by_count(const void *a, const void *b)
+{
+	const struct WordStat *x = a;
+	const struct WordStat *y = b;
+
+	if (x->count != y->count)
+		return y->count - x->count;	/* most frequent first */
+	return strcmp(x->name, y->name);	/* same count: alphabetical */
+}
+
+int by_word(const void *a, const void *b)
+{
+	const struct WordStat *x = a;
+	const struct WordStat *y = b;
+
+	return strcmp(x->name, y->name);	/* alphabetical */
+}
+
+void sort_word_statistics(struct Text *t)
+{
+	/* The user's choice picks which sort rule qsort uses. */
+	CompareFunction rules[2] = {by_word, by_count};
+	int choice;
+
+	if (is_empty(t))
+		return;
+	choice = read_number("Sort by 1) word  2) frequency: ");
+	if (choice < 1 || choice > 2) {
+		printf("Invalid choice.\n");
+		return;
+	}
+	qsort(t->words, t->distinct, sizeof(struct WordStat), rules[choice - 1]);
+	display_word_statistics(t);
+}
+
+/* The typed word goes through next_word, so "Life," finds "life". */
+void search_word(struct Text *t)
+{
+	char line[100];
+	char word[MAX_WORD];
+	struct WordStat *found;
+
+	if (is_empty(t))
+		return;
+	read_line("Word to search: ", line, sizeof(line));
+	if (next_word(line, word) == NULL) {
+		printf("No word was typed.\n");
+		return;
+	}
+	found = find_word(t, word);
+	if (found != NULL)
+		printf("Frequency of \"%s\": %d\n", found->name, found->count);
+	else
+		printf("\"%s\" does not appear in the text.\n", word);
+}
+
+/*
+ * Lexical Diversity Score (LDS): what share of the words are different words.
+ * LDS = distinct words / total words x 100, from 0 to 100.
+ */
+float lexical_diversity(struct Text *t)
+{
+	if (t->total == 0)
+		return 0;
+	return (float)t->distinct * 100 / t->total;
+}
+
+char *diversity_band(float score)
+{
+	if (score < 40)
+		return "Low";
+	if (score < 70)
+		return "Medium";
+	return "High";
+}

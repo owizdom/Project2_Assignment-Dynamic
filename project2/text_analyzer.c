@@ -30,3 +30,52 @@ char default_text[] =
 	"to the fixed law of gravity, from so simple a beginning endless forms "
 	"most beautiful and most wonderful have been, and are being, evolved.";
 
+int main(void)
+{
+	/* Menu choice 1 runs actions[0], choice 2 runs actions[1], and so on. */
+	MenuAction actions[10] = {
+		enter_paragraph, count_words, longest_word, most_frequent,
+		display_word_statistics, sort_word_statistics, search_word,
+		custom_analysis, memory_inspection, generate_text_summary
+	};
+	struct Text t = {NULL, NULL, 0, 0};
+	char *buffer;
+	int choice;
+
+	printf("Student ID: %s\n", STUDENT_ID);
+	printf("Project: Dynamic Text Mining and Linguistic Pattern Analyzer\n");
+	printf("Source: On the Origin of Species, Charles Darwin (John Murray, 1859), closing paragraph\n");
+	printf("Custom Analysis: Lexical Diversity Score\n");
+
+	buffer = malloc(strlen(default_text) + 1);
+	if (buffer == NULL) {
+		printf("Out of memory.\n");
+		return 1;
+	}
+	strcpy(buffer, default_text);
+	t.buffer = buffer;
+	if (build_word_stats(&t) == 0) {
+		printf("Out of memory.\n");
+		free(t.buffer);
+		return 1;
+	}
+	printf("Paragraph loaded. Words: %d  Distinct: %d\n", t.total, t.distinct);
+
+	while (1) {
+		printf("\n1.Paste text  2.Count words  3.Longest word  4.Most frequent\n");
+		printf("5.Word table  6.Sort  7.Search  8.Lexical diversity\n");
+		printf("9.Memory addresses  10.Summary  11.Exit\n");
+		choice = read_number("Choice: ");
+		if (choice == 11 || feof(stdin))
+			break;
+		if (choice >= 1 && choice <= 10)
+			actions[choice - 1](&t);
+		else
+			printf("Invalid choice. Enter 1 to 11.\n");
+	}
+
+	free(t.buffer);
+	free(t.words);
+	printf("Memory freed. Goodbye.\n");
+	return 0;
+}

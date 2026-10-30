@@ -106,3 +106,117 @@ void read_line(const char *prompt, char *text, int size)
 			c = getchar();
 	}
 }
+
+/* Reads a whole number. Returns -1 if the user did not type one. */
+int read_number(const char *prompt)
+{
+	char line[32];
+	int number;
+
+	read_line(prompt, line, sizeof(line));
+	if (sscanf(line, "%d", &number) != 1)
+		return -1;
+	return number;
+}
+
+/* Returns 1 (and says so) when there are no devices. */
+int is_empty(struct Network *n)
+{
+	if (n->count == 0) {
+		printf("No devices registered.\n");
+		return 1;
+	}
+	return 0;
+}
+
+char *type_name(int type)
+{
+	if (type == TEMPERATURE)
+		return "Temperature";
+	if (type == PRESSURE)
+		return "Pressure";
+	return "Battery";
+}
+
+/* Writes the reading with its unit into text (20 characters at most), using the type's union member. */
+void format_value(struct Device *d, char *text)
+{
+	if (d->status == STATUS_NO_READING)
+		snprintf(text, 20, "-");
+	else if (d->type == TEMPERATURE)
+		snprintf(text, 20, "%.1f C", d->reading.temperature);
+	else if (d->type == PRESSURE)
+		snprintf(text, 20, "%d kPa", d->reading.pressure);
+	else
+		snprintf(text, 20, "%.2f V", d->reading.voltage);
+}
+
+/* Prints every device by moving a pointer through the array. */
+void display_devices(struct Network *n)
+{
+	char *status_names[4] = {"No reading", "Waiting", "Normal", "Alert"};
+	struct Device *p;
+	char value[20];
+
+	if (is_empty(n))
+		return;
+	printf("%-4s %-14s %-12s %-9s %s\n", "ID", "Name", "Type", "Reading", "Status");
+	for (p = n->list; p < n->list + n->count; p++) {
+		format_value(p, value);
+		printf("%-4d %-14s %-12s %-9s %s\n", p->id, p->name, type_name(p->type), value, status_names[p->status]);
+	}
+	printf("Total devices: %d\n", n->count);
+}
+
+/* Moves a pointer through the array. Returns the device, or NULL. */
+struct Device *find_device(struct Network *n, int id)
+{
+	struct Device *p;
+
+	for (p = n->list; p < n->list + n->count; p++) {
+		if (p->id == id)
+			return p;
+	}
+	return NULL;
+}
+
+void register_device(struct Network *n)
+{
+	struct Device d;
+	struct Device *bigger;
+
+	d.id = read_number("Device id: ");
+	if (d.id <= 0) {
+		printf("Rejected: the id must be a number above 0.\n");
+		return;
+	}
+	if (find_device(n, d.id) != NULL) {
+		printf("Rejected: id %d already exists.\n", d.id);
+		return;
+	}
+	read_line("Name: ", d.name, sizeof(d.name));
+	if (strlen(d.name) == 0) {
+		printf("Rejected: the name cannot be empty.\n");
+		return;
+	}
+	d.type = read_number("Type 1) Temperature  2) Pressure  3) Battery: ");
+	if (d.type < TEMPERATURE || d.type > BATTERY) {
+		printf("Rejected: the type must be 1, 2 or 3.\n");
+		return;
+	}
+	memset(&d.reading, 0, sizeof(d.reading));	/* no reading yet */
+	d.status = STATUS_NO_READING;
+	d.previous = 0;
+	d.processed = 0;
+
+	/* Make the array one bigger and put the new device at the end. */
+	bigger = realloc(n->list, (n->count + 1) * sizeof(struct Device));
+	if (bigger == NULL) {
+		printf("Out of memory: device not registered.\n");
+		return;	/* the old array is unchanged */
+	}
+	n->list = bigger;
+	n->list[n->count] = d;
+	n->count = n->count + 1;
+	printf("Registered %s. Devices: %d\n", d.name, n->count);
+}

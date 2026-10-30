@@ -370,3 +370,65 @@ char *diversity_band(float score)
 		return "Medium";
 	return "High";
 }
+
+void custom_analysis(struct Text *t)
+{
+	struct WordStat *p;
+	int once = 0;
+	float score;
+
+	if (is_empty(t))
+		return;
+	for (p = t->words; p < t->words + t->distinct; p++) {
+		if (p->count == 1)
+			once = once + 1;	/* a word used only once */
+	}
+	score = lexical_diversity(t);
+	printf("Lexical Diversity Score (LDS)\n");
+	printf("LDS = distinct words / total words x 100\n");
+	printf("    = %d / %d x 100 = %.1f\n", t->distinct, t->total, score);
+	printf("Band: %s  (Low below 40, Medium 40 to 69.9, High 70 and above)\n", diversity_band(score));
+	printf("Words used only once: %d of %d\n", once, t->distinct);
+}
+
+/* Prints where the main pieces of data live in memory. */
+void memory_inspection(struct Text *t)
+{
+	struct WordStat *selected;
+
+	if (is_empty(t))
+		return;
+	selected = t->words + t->distinct - 1;	/* the last entry of the table */
+	printf("Memory Inspection\n");
+	printf("--------------------------\n");
+	printf("Text buffer address: %p\n", (void *)t->buffer);
+	printf("  the paragraph itself, from malloc\n");
+	printf("Word statistics array: %p\n", (void *)t->words);
+	printf("  the first entry of the word table, from realloc\n");
+	printf("Selected word-stat entry: %p\n", (void *)selected);
+	printf("  the last entry of the word table, for \"%s\"\n", selected->name);
+	printf("Each entry takes %d bytes.\n", (int)sizeof(struct WordStat));
+}
+
+void generate_text_summary(struct Text *t)
+{
+	struct WordStat *p;
+	int letters = 0;
+	float score;
+
+	if (is_empty(t))
+		return;
+	/* Characters in every word (hyphens and apostrophes count), repeats included. */
+	for (p = t->words; p < t->words + t->distinct; p++)
+		letters = letters + strlen(p->name) * p->count;
+	score = lexical_diversity(t);
+	printf("Text Summary\n");
+	count_words(t);
+	printf("Distinct words: %d\n", t->distinct);
+	printf("Average word length: %.2f characters\n", (float)letters / t->total);
+	longest_word(t);
+	most_frequent(t);
+	printf("Lexical Diversity Score: %.1f (%s)\n", score, diversity_band(score));
+}
+
+#endif

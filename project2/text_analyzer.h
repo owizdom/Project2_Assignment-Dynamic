@@ -115,3 +115,86 @@ char *read_paragraph(void)
 	printf("Read %d characters. Buffer: 64 bytes at the start, doubled %d times to %d bytes.\n", length, grew, size);
 	return buffer;
 }
+
+/* Letters and digits are the only characters a word is made of. */
+int is_word_char(char c)
+{
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+}
+
+/*
+ * Moves a pointer to the next word and copies it into word, in lowercase.
+ * An apostrophe or hyphen is kept only when a letter follows it (don't, less-improved).
+ * Letters after the 39th are skipped, so word can never overflow.
+ * Returns a pointer just past the word, or NULL when no word is left.
+ */
+char *next_word(char *p, char *word)
+{
+	int length = 0;
+
+	while (*p != '\0' && !is_word_char(*p))
+		p++;	/* skip spaces and punctuation */
+	if (*p == '\0')
+		return NULL;
+
+	while (is_word_char(*p) || ((*p == '\'' || *p == '-') && is_word_char(*(p + 1)))) {
+		if (length < MAX_WORD - 1) {
+			word[length] = tolower(*p);
+			length = length + 1;
+		}
+		p++;
+	}
+	word[length] = '\0';
+	return p;
+}
+
+/* Moves a pointer through the word table. Returns the entry, or NULL. */
+struct WordStat *find_word(struct Text *t, char *word)
+{
+	struct WordStat *p;
+
+	for (p = t->words; p < t->words + t->distinct; p++) {
+		if (strcmp(p->name, word) == 0)
+			return p;
+	}
+	return NULL;
+}
+
+/* Reads every word in the text and counts how often each one appears. */
+int build_word_stats(struct Text *t)
+{
+	char word[MAX_WORD];
+	struct WordStat *found;
+	struct WordStat *bigger;
+	char *p;
+
+	free(t->words);
+	t->words = NULL;
+	t->distinct = 0;
+	t->total = 0;
+
+	p = next_word(t->buffer, word);
+	while (p != NULL) {
+		t->total = t->total + 1;
+		found = find_word(t, word);
+		if (found != NULL) {
+			found->count = found->count + 1;
+		} else {
+			/* A new word: make the table one bigger and put it at the end. */
+			bigger = realloc(t->words, (t->distinct + 1) * sizeof(struct WordStat));
+			if (bigger == NULL) {
+				free(t->words);
+				t->words = NULL;
+				t->distinct = 0;
+				t->total = 0;
+				return 0;
+			}
+			t->words = bigger;
+			strcpy(t->words[t->distinct].name, word);	/* word is at most 39 letters */
+			t->words[t->distinct].count = 1;
+			t->distinct = t->distinct + 1;
+		}
+		p = next_word(p, word);
+	}
+	return 1;
+}

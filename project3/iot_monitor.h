@@ -283,3 +283,103 @@ void generate_readings(struct Network *n)
 	else
 		printf("Generated %d new readings. Choose 5 to process them.\n", made);
 }
+
+/* The alert log, kept in memory from realloc. */
+struct Alert *alerts = NULL;
+
+int alert_count = 0;
+
+/*
+ * The reading as a float, read from the union member that matches the type.
+ * Only the member of the device's own type holds a valid value.
+ */
+float reading_value(struct Device *d)
+{
+	if (d->type == TEMPERATURE)
+		return d->reading.temperature;
+	if (d->type == PRESSURE)
+		return d->reading.pressure;
+	return d->reading.voltage;
+}
+
+/* Marks the device as an alert and adds a copy of the details to the log. */
+void raise_alert(struct Device *d, char *limit, char *reason, char *callback)
+{
+	struct Alert *bigger;
+	struct Alert *a;
+
+	d->status = STATUS_ALERT;
+	bigger = realloc(alerts, (alert_count + 1) * sizeof(struct Alert));
+	if (bigger == NULL) {
+		printf("Out of memory: alert not logged.\n");
+		return;
+	}
+	alerts = bigger;
+	a = &alerts[alert_count];
+	a->device_id = d->id;
+	strcpy(a->name, d->name);
+	a->type = d->type;
+	a->value = reading_value(d);
+	strcpy(a->limit, limit);
+	strcpy(a->reason, reason);
+	strcpy(a->callback, callback);
+	alert_count = alert_count + 1;
+}
+
+/* Callbacks: each one checks one type of reading against its limits. */
+void temperature_monitor(struct Device *d)
+{
+	float t = d->reading.temperature;
+
+	if (t > TEMP_HIGH)
+		raise_alert(d, "15.0 to 45.0 C", "too hot", "temperature_monitor");
+	else if (t < TEMP_LOW)
+		raise_alert(d, "15.0 to 45.0 C", "too cold", "temperature_monitor");
+}
+
+void pressure_monitor(struct Device *d)
+{
+	int p = d->reading.pressure;
+
+	if (p > PRESSURE_HIGH)
+		raise_alert(d, "90 to 110 kPa", "too high", "pressure_monitor");
+	else if (p < PRESSURE_LOW)
+		raise_alert(d, "90 to 110 kPa", "too low", "pressure_monitor");
+}
+
+void battery_monitor(struct Device *d)
+{
+	float v = d->reading.voltage;
+
+	if (v > VOLTAGE_HIGH)
+		raise_alert(d, "3.30 to 4.20 V", "overcharged", "battery_monitor");
+	else if (v < VOLTAGE_LOW)
+		raise_alert(d, "3.30 to 4.20 V", "too low", "battery_monitor");
+}
+
+/*
+ * Custom callback: Sensor Drift Detector.
+ * Compares the new reading with the device's previous one. A jump bigger
+ * than the drift limit for its type is an alert, even inside the normal range.
+ */
+void drift_detector(struct Device *d)
+{
+	float change;
+	float limit[3] = {TEMP_DRIFT, PRESSURE_DRIFT, VOLTAGE_DRIFT};
+	char *limit_text[3] = {"change up to 15.0 C", "change up to 15 kPa", "change up to 0.50 V"};
+
+	if (d->processed == 0)
+		return;		/* the first reading has nothing to compare with */
+	change = reading_value(d) - d->previous;
+	if (change < 0)
+		change = -change;
+	/* + 0.001 so float rounding never turns a change equal to the limit into an alert */
+	if (change > limit[d->type - 1] + 0.001f)
+		raise_alert(d, limit_text[d->type - 1], "sudden jump", "drift_detector");
+}
+
+/* Runs one callback on one device, through a function pointer. */
+void process_device(struct Device *device, void (*callback)(struct Device *))
+{
+	callback(device);
+}

@@ -36,3 +36,51 @@ Charles Darwin, *On the Origin of Species*, first edition (John Murray, London, 
 
 Menu option 1 replaces it with any pasted paragraph.
 
+## 3. Sample output
+
+[`sample_run/output.txt`](sample_run/output.txt) is a real run, typed from [`sample_run/input.txt`](sample_run/input.txt). It shows both sorts, the longest and most frequent words, three searches, the score, the memory addresses, the summary, and two pastes.
+
+## 4. Custom analysis: Lexical Diversity Score
+
+LDS = distinct words / total words x 100. Below 40 is Low (many repeats), 40 to 69.9 is Medium, and 70 or more is High (mostly new words).
+
+The word table holds each distinct word once, so the score is the number of entries divided by the total word count. A pointer then walks the table to count the words used only once.
+
+Darwin's paragraph scores 135 / 219 x 100 = 61.6, which is Medium. 105 of its 135 words appear only once, and the repeats are joining words such as "and" (12), "of" (11) and "the" (11).
+
+## 5. Punctuation, repeated words and growing input
+
+- A word is a run of letters and digits. Any other character separates words.
+- An apostrophe or hyphen stays inside a word when a letter follows it (`cat's`, `well-known`). Otherwise it separates.
+- Words are stored in lowercase, so `The` and `the` are one word.
+- Words longer than 39 characters are cut to 39. Curly quotes and accented letters separate words.
+
+From the sample run:
+
+```
+Choice: 1
+Paste a paragraph, then press Enter on an empty line:
+The cat's toy -- the CAT'S toy!!   The well-known toy,
+so  well-known... 'quoted' end-
+pneumonoultramicroscopicsilicovolcanoconiosis is 45 letters long.
+
+Read 153 characters. Buffer: 64 bytes at the start, doubled 2 times to 256 bytes.
+Text loaded. Words: 18  Distinct: 12
+
+Choice: 5
+the             3    cat's           2    toy             3    well-known      2
+so              1    quoted          1    end             1    pneumonoultramicroscopicsilicovolcanoco  1
+is              1    45              1    letters         1    long            1
+Distinct words: 12
+
+Choice: 1
+Paste a paragraph, then press Enter on an empty line:
+
+No words were entered. The old text is kept.
+```
+
+Punctuation is dropped, `The` and `the` count as one word, the 45-letter word is cut to 39, and the buffer grew from 64 to 256 bytes.
+
+## Author
+
+Wisdom Okechukwu

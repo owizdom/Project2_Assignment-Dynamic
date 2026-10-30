@@ -147,3 +147,65 @@ void add_student(struct Roster *r)
 	r->count = r->count + 1;
 	printf("Added %s. Records: %d\n", s.name, r->count);
 }
+
+void remove_student(struct Roster *r)
+{
+	struct Student *target;
+	struct Student *p;
+	struct Student *smaller;
+	int id;
+
+	if (is_empty(r))
+		return;
+	id = read_number("Id to remove: ");
+	target = find_by_id(r, id);
+	if (target == NULL) {
+		printf("No student with that id.\n");
+		return;
+	}
+
+	/* Move every student after the removed one down one place. */
+	for (p = target; p < r->list + r->count - 1; p++)
+		*p = *(p + 1);
+	r->count = r->count - 1;
+
+	/* Make the array one smaller, or free it when it is empty. */
+	if (r->count == 0) {
+		free(r->list);
+		r->list = NULL;
+	} else {
+		smaller = realloc(r->list, r->count * sizeof(struct Student));
+		if (smaller != NULL)
+			r->list = smaller;	/* if this fails, the old array still works */
+	}
+	printf("Removed id %d. Records: %d\n", id, r->count);
+}
+
+/* Sort rules for qsort. Each one returns a negative number when a goes first. */
+int by_grade(const void *a, const void *b)
+{
+	const struct Student *x = a;
+	const struct Student *y = b;
+
+	if (x->grade > y->grade)
+		return -1;	/* highest grade first */
+	if (x->grade < y->grade)
+		return 1;
+	return 0;
+}
+
+int by_name(const void *a, const void *b)
+{
+	const struct Student *x = a;
+	const struct Student *y = b;
+
+	return strcmp(x->name, y->name);	/* alphabetical */
+}
+
+int by_id(const void *a, const void *b)
+{
+	const struct Student *x = a;
+	const struct Student *y = b;
+
+	return x->id - y->id;	/* smallest id first */
+}
